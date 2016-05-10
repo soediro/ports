@@ -1,38 +1,73 @@
 # Created by: Sunpoet Po-Chuan Hsieh <sunpoet@FreeBSD.org>
-# $FreeBSD$
+# $FreeBSD: head/databases/kyototycoon/Makefile 427491 2016-12-01 11:18:03Z mat $
 
 PORTNAME=	kyototycoon
-PORTVERSION=	0.9.56
-PORTREVISION=	2
+PORTVERSION=	20151209
+PORTREVISION=	4
 CATEGORIES=	databases
-MASTER_SITES=	http://fallabs.com/${PORTNAME}/pkg/ \
-		LOCAL/sunpoet
 
 MAINTAINER=	sunpoet@FreeBSD.org
 COMMENT=	Handy cache/storage server
 
 LICENSE=	GPLv3
 
-LIB_DEPENDS=	libkyotocabinet.so:databases/kyotocabinet
+LIB_DEPENDS=	libkyotocabinet.so:databases/kyotocabinet \
+		liblua-5.2.so:lang/lua51 \
+		liblzo2.so:archivers/lzo2
 
 OPTIONS_DEFINE=	DOCS
+DOCSDIR=	${PREFIX}/share/doc/${PORTNAME}
 
-CONFIGURE_ARGS=	--enable-uyield
+USE_GITHUB=	yes
+GH_ACCOUNT=	alticelabs
+GH_PROJECT=	kyoto
+GH_TAGNAME=	661c278
+
 CPPFLAGS+=	-fPIC
-GNU_CONFIGURE=	yes
-INSTALL_TARGET=	install-strip
-MAKE_ARGS=	PCDIR=${PREFIX}/libdata/pkgconfig
+MAKE_ARGS=	PCDIR=${PREFIX}/libdata/pkgconfig MAN1DIR=${PREFIX}/man/man1
 REINPLACE_ARGS=	-i ''
 TEST_TARGET=	check
 USE_LDCONFIG=	yes
 USES=		gmake pkgconfig
+USES+=		lua
 
-post-patch:
-	@${REINPLACE_CMD} -e 's|-lstdc++ ||g' ${WRKSRC}/configure ${WRKSRC}/doc/spex.html ${WRKSRC}/example/Makefile
+SUB_FILES=	${PORTNAME}
+SUB_LIST+=	KYOTOTYCOON_USER=${KYOTOTYCOON_USER} \
+		KYOTOTYCOON_GROUP=${KYOTOTYCOON_GROUP} \
+		KYOTOTYCOON_PIDFILE=${KYOTOTYCOON_PIDFILE} \
+		KYOTOTYCOON_DBDIR=${KYOTOTYCOON_DBDIR} \
+		KYOTOTYCOON_LOGDIR=${KYOTOTYCOON_LOGDIR}
+
+PLIST_SUB=	KYOTOTYCOON_USER=${KYOTOTYCOON_USER} \
+		KYOTOTYCOON_GROUP=${KYOTOTYCOON_GROUP} \
+		KYOTOTYCOON_PIDFILE=${KYOTOTYCOON_PIDFILE} \
+		KYOTOTYCOON_DBDIR=${KYOTOTYCOON_DBDIR} \
+		KYOTOTYCOON_LOGDIR=${KYOTOTYCOON_LOGDIR}
+
+KYOTOTYCOON_USER?=	${PORTNAME}
+KYOTOTYCOON_GROUP?=	${PORTNAME}
+
+.if ${KYOTOTYCOON_USER} == "${PORTNAME}"
+USERS=	${PORTNAME}
+.endif
+.if ${KYOTOTYCOON_GROUP} == "${PORTNAME}"
+GROUPS=	${PORTNAME}
+.endif
+
+KYOTOTYCOON_LOGDIR=	/var/log/${PORTNAME}/
+KYOTOTYCOON_DBDIR=	/var/db/${PORTNAME}/
+KYOTOTYCOON_PIDFILE=	/var/run/${PORTNAME}.pid
+
+post-build:
+	${MKDIR} \
+		${STAGEDIR}${ETCDIR} \
+		${STAGEDIR}${KYOTOTYCOON_DBDIR} \
+		${STAGEDIR}${KYOTOTYCOON_LOGDIR}
 
 post-install:
 	${STRIP_CMD} ${STAGEDIR}${PREFIX}/lib/libkyototycoon.so.2.19.0 ${STAGEDIR}${PREFIX}/libexec/*.so
-	${FIND} ${STAGEDIR}${DOCSDIR}/ -type d -exec ${CHMOD} ${BINMODE} '{}' \;
-	${FIND} ${STAGEDIR}${DOCSDIR}/ -type f -exec ${CHMOD} ${DOCMODE} '{}' \;
+	${STRIP_CMD} ${STAGEDIR}${PREFIX}/lib/libkyotocabinet.so.16.13.0 ${STAGEDIR}${PREFIX}/libexec/*.so
+	${FIND} ${STAGEDIR}${DOCSDIR}/ -type d -exec ${CHMOD} ${BINMODE} {} \;
+	${FIND} ${STAGEDIR}${DOCSDIR}/ -type f -exec ${CHMOD} ${DOCMODE} {} \;
 
 .include <bsd.port.mk>

@@ -1,0 +1,55 @@
+#!/bin/sh
+
+# $FreeBSD$
+#
+# PROVIDE: kyototycoon
+# REQUIRE: LOGIN NETWORKING SERVERS
+# KEYWORD: shutdown
+#
+# Add the following lines to /etc/rc.conf.local or /etc/rc.conf
+# to enable this service:
+#
+# kyototycoon_enable    (bool):   Set to NO by default.
+# Set it to YES to enable kyototycoon.
+#
+# kyototycoon_user      (user):   Set to kyototycoon by default.
+# kyototycoon_group     (group):  Set to kyototycoon by default.
+# kyototycoon_logs      (path):   Path to log file.
+# kyototycoon_dbdir     (path):   Path to database files.
+# kyototycoon_sid       (sid):    ServerID - 0-65535
+# kyototycoon_opts      (args):   Additional command-line arguments.
+. /etc/rc.subr
+
+name="kyototycoon"
+rcvar=kyototycoon_enable
+
+load_rc_config $name
+
+: ${kyototycoon_enable="NO"}
+: ${kyototycoon_user:="%%KYOTOTYCOON_USER%%"}
+: ${kyototycoon_group:="%%KYOTOTYCOON_GROUP%%"}
+: ${kyototycoon_logs="%%KYOTOTYCOON_LOGDIR%%/kyoto.log"}
+: ${kyototycoon_dbdir="%%KYOTOTYCOON_DBDIR%%"}
+: ${kyototycoon_sid="1"}
+: ${kyototycoon_opts:=" -li"}
+
+pidfile="%%KYOTOTYCOON_PIDFILE%%"
+command="/usr/sbin/daemon"
+command_args="-f -c -r -t ${name} -P ${pidfile} \
+    %%PREFIX%%/bin/ktserver \
+    -sid ${kyototycoon_sid} \
+    -log ${kyototycoon_logs} \
+    -bgs ${kyototycoon_dbdir}/snapshots/ \
+    -ulog ${kyototycoon_dbdir}/updates/ \
+    ${kyototycoon_opts}"
+
+# support SIGHUP to reload configuration file
+extra_commands="reload"
+
+kyototycoon_prestart()
+{
+    install -o ${kyototycoon_user} /dev/null ${pidfile}
+}
+start_precmd=${name}_prestart
+
+run_rc_command "$1"
