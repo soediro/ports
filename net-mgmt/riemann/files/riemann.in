@@ -56,7 +56,7 @@ load_rc_config $name
 
 pidfile="%%RIEMANN_PIDFILE%%"
 command="/usr/sbin/daemon"
-command_args="-f -c -r -P ${pidfile} \
+command_args="-f -t ${name} -c -r -P ${pidfile} \
     ${riemann_java_home}/bin/java \
     ${riemann_java_opts} \
     -jar ${riemann_jarfile} ${riemann_config}"
@@ -67,5 +67,8 @@ riemann_prestart()
     	install -o ${riemann_user} /dev/null ${pidfile}
 }
 start_precmd=${name}_prestart
+
+# support SIGUP to reload config file
+extra_commands="reload"
 
 run_rc_command "$1"
