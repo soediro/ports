@@ -1,3 +1,11 @@
-%%ETCDIR%%/graylog.conf.example
+@sample %%ETCDIR%%/graylog.conf.example
 %%ETCDIR%%/graylog_logging.xml
-graylog/graylog.jar
+%%JAVASHAREDIR%%/graylog/graylog.jar
+%%JAVASHAREDIR%%/graylog/graylog-plugin-beats-1.1.0.jar
+%%JAVASHAREDIR%%/graylog/graylog-plugin-collector-1.1.0.jar
+%%JAVASHAREDIR%%/graylog/graylog-plugin-enterprise-integration-1.1.0.jar
+%%JAVASHAREDIR%%/graylog/graylog-plugin-map-widget-1.1.0.jar
+%%JAVASHAREDIR%%/graylog/graylog-plugin-pipeline-processor-1.1.0.jar
+%%JAVASHAREDIR%%/graylog/graylog.jar
+%%JAVASHAREDIR%%/graylog/usage-statistics-2.1.0.jar
+@dir(%%GRAYLOGUSER%%%,%%GRAYLOGGROUP%%,0750) /var/db/graylog
