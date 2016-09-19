@@ -1,7 +1,7 @@
 # $FreeBSD$
 
 PORTNAME=	vault
-PORTVERSION=	0.5.3
+PORTVERSION=	0.6.2
 DISTVERSIONPREFIX=	v
 CATEGORIES=	security
 
@@ -10,7 +10,7 @@ COMMENT=	Tool for securely accessing secrets
 
 LICENSE=	MPL
 
-BUILD_DEPENDS=	${LOCALBASE}/bin/go:lang/go
+BUILD_DEPENDS=	go>=1.7.1:lang/go
 
 USE_GITHUB=	yes
 GH_ACCOUNT=	hashicorp
@@ -24,13 +24,16 @@ GROUPS=		vault
 
 PLIST_FILES=	bin/${PORTNAME}
 
+# GIT_COMMIT = git rev-parse HEAD
+
 post-patch:
+	@${REINPLACE_CMD} -e 's|PORTVERSION|${PORTVERSION}|g' ${WRKSRC}/version/version.go
 	@${MV} ${WRKSRC}/vendor ${WRKSRC}/src
 	@${MKDIR} ${WRKSRC}/src/github.com/${GH_ACCOUNT}/${PORTNAME}
 	@cd ${WRKSRC} ; \
-	${MV} .gitignore .travis.yml CHANGELOG.md CONTRIBUTING.md Godeps \
+	${MV} .gitignore .travis.yml CHANGELOG.md CONTRIBUTING.md \
 	LICENSE Makefile README.md api audit builtin cli command helper http \
-	logical main.go main_test.go make.bat physical scripts shamir terraform \
+	logical main.go main_test.go make.bat meta physical scripts shamir terraform \
 	vault version website \
 	src/github.com/${GH_ACCOUNT}/${PORTNAME}
 
