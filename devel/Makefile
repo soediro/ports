@@ -1313,6 +1313,7 @@
     SUBDIR += libolecf
     SUBDIR += liboobs
     SUBDIR += liboop
+    SUBDIR += libopenbsd
     SUBDIR += libopencm3
     SUBDIR += libopensync
     SUBDIR += libopkele
