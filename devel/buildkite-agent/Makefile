@@ -1,7 +1,7 @@
 # $FreeBSD$
 
 PORTNAME=	buildkite-agent
-PORTVERSION=	3.0b33
+PORTVERSION=	3.0b36
 CATEGORIES=	devel sysutils
 
 MAINTAINER=	dch@skunkwerks.at
@@ -11,13 +11,12 @@ LICENSE=	MIT BSD3CLAUSE APACHE20 LGPL3 BSD2CLAUSE
 LICENSE_FILE=	${WRKSRC}/LICENSE.txt
 LICENSE_COMB=	multi
 
-BUILD_DEPENDS=	go>=1.8:lang/go
-RUN_DEPENDS=	${LOCALBASE}/bin/bash:shells/bash
+BUILD_DEPENDS=	go>=1.9:lang/go
 
 USE_GITHUB=	yes
 GH_ACCOUNT=	buildkite
 GH_PROJECT=	agent
-GH_TAGNAME=	v3.0-beta.33
+GH_TAGNAME=	v3.0-beta.36
 
 USES=		go
 GO_PKGNAME=	github.com/${GH_ACCOUNT}/${GH_PROJECT}
@@ -29,9 +28,9 @@ ETCDIR=		${PREFIX}/etc/buildkite
 SUB_FILES=	pkg-message
 
 post-patch:
-	@${REINPLACE_CMD} -I '' -e 's|/bin/bash|/usr/local/bin/bash|g' \
+	@${REINPLACE_CMD} -I '' -e 's|/bin/bash|${LOCALBASE}/bin/bash|g' \
 			`${FIND} ${WRKSRC}/packaging/linux -type f`
-	@${REINPLACE_CMD} -I '' -e 's|/bin/bash|/usr/local/bin/bash|g' \
+	@${REINPLACE_CMD} -I '' -e 's|/bin/bash|${LOCALBASE}/bin/bash|g' \
 			`${FIND} ${WRKSRC}/bootstrap -type f -name *.go`
 
 do-install:
