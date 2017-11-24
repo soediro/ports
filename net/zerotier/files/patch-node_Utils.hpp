@@ -1,6 +1,6 @@
---- node/Utils.hpp.orig	2015-08-25 16:55:14 UTC
+--- node/Utils.hpp.orig	2017-04-24 18:41:23 UTC
 +++ node/Utils.hpp
-@@ -39,6 +39,10 @@
+@@ -30,6 +30,10 @@
  #include <vector>
  #include <map>
  
@@ -11,7 +11,7 @@
  #include "Constants.hpp"
  
  namespace ZeroTier {
-@@ -321,8 +325,12 @@ public:
+@@ -293,8 +297,12 @@ class Utils (public)
  		throw()
  	{
  #if __BYTE_ORDER == __LITTLE_ENDIAN
@@ -25,7 +25,7 @@
  #else
  		return (
  			((n & 0x00000000000000FFULL) << 56) | 
-@@ -351,8 +359,12 @@ public:
+@@ -323,8 +331,12 @@ class Utils (public)
  		throw()
  	{
  #if __BYTE_ORDER == __LITTLE_ENDIAN

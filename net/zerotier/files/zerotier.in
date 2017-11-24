@@ -4,6 +4,7 @@
 #
 # PROVIDE: zerotier
 # REQUIRE: LOGIN
+# BEFORE:  pf ipfw ipfilter
 # KEYWORD: shutdown
 #
 # Add these lines to /etc/rc.conf.local or /etc/rc.conf
