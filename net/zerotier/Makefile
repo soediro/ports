@@ -1,9 +1,8 @@
 # Created by: Corey Smith <corsmith@gmail.com>
-# $FreeBSD$
+# $FreeBSD: head/net/zerotier/Makefile 465113 2018-03-20 22:27:21Z dch $
 
 PORTNAME=	zerotier
-PORTVERSION=	1.2.4
-PORTREVISION=	2
+DISTVERSION=	1.2.10
 CATEGORIES=	net
 
 MAINTAINER=	dch@FreeBSD.org
